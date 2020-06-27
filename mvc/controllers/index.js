@@ -2,9 +2,13 @@
 let data = require("../../data");
 
 const postData = data.postData;
+const uniqueTags = data.uniqueTags;
+const categoryData = data.categoryData;
+
+const recentPostAmount = 6;
 
 const getHomePage = function(req,res){
-    res.render('index' , {title : "Just Me" , posts : postData , active : "index"});
+    res.render('index' , {title : "Just Me" , posts : postData , active : "index" , categoryData : categoryData});
 }
 
 const getBlogPost = function(req,res) {
@@ -15,11 +19,11 @@ const getBlogPost = function(req,res) {
         res.redirect('/404');
     }
 
-    res.render("post" , {title : post.title , post : post});
+    res.render("post" , {title : post.title , post : post , uniqueTags : uniqueTags , recentPosts : postData.slice(0 , recentPostAmount) , categoryData : categoryData});
 }
 
 const get404 = function(req,res) {
-    res.render('404' , {title : '404 - I couldnot find that page....'});
+    res.render('404' , {title : '404 - I couldnot find that page....' , uniqueTags : uniqueTags , recentPosts : postData.slice(0 , recentPostAmount) , categoryData : categoryData});
 }
 
 const redirect404 = function(req , res) {
@@ -27,10 +31,17 @@ const redirect404 = function(req , res) {
 }
 
 const getAbout = function(req,res) {
-    res.render("about" , {title : "About Me" , active : "about"});
+    res.render("about" , {title : "About Me" , active : "about" , categoryData : categoryData});
 }
+
 const getContact = function(req,res) {
-    res.render("contact" , {title : "Contact" , active : "contact"});
+    res.render("contact" , {title : "Contact" , active : "contact" , categoryData : categoryData});
+}
+
+const getFilteredList = function(req,res) {
+    let query = req.query;
+    let filteredPost = postData.filter((val) => val.category == query.category);
+    res.render('filter' , {title : "Just Me - Filtered" , active : query.category, posts : filteredPost , categoryData : categoryData});
 }
 
 module.exports = {
@@ -39,5 +50,6 @@ module.exports = {
     get404,
     redirect404,
     getAbout,
-    getContact
+    getContact,
+    getFilteredList
 }

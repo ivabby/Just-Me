@@ -596,13 +596,28 @@ let postData = [
         date: "Nov, 16, 2019"
     }
 ];
-
+let uniqueTags = new Set();
+let categoryData = [];
 
 for(let i=0;i<postData.length;i++){
     let startingId = 842;
     postData[i].id = startingId + i;
 
     postData[i].numOfComments = countComments(postData[i].comments);
+
+    for(let j=0;j<postData[i].tags.length;j++){
+        uniqueTags.add(postData[i].tags[j]);
+    }
+
+    var holder = holder || [];
+    if(holder.includes(postData[i].category)) {
+        categoryData.forEach((value) => {
+            value.category === postData[i].category && value.amount++;
+        });
+    } else {
+        holder.push(postData[i].category);
+        categoryData.push({category : postData[i].category , amount : 1});
+    }
 }
 
 function countComments(commentArray){
@@ -615,6 +630,13 @@ function countComments(commentArray){
   return amount;
 }
 
+
+uniqueTags = [...uniqueTags];
+console.log("categoryData");
+console.log(categoryData);
+
 module.exports = {
-    postData
+    postData,
+    uniqueTags,
+    categoryData
 }
