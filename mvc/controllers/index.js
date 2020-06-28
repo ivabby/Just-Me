@@ -40,7 +40,9 @@ const getContact = function(req,res) {
 
 const getFilteredList = function(req,res) {
     let query = req.query;
-    let filteredPost = postData.filter((val) => val.category == query.category);
+    let filteredPost = postData.filter((val) => {
+        return val.category == query.category || val.tags.includes(query.tag);
+    });
     res.render('filter' , {title : "Just Me - Filtered" , active : query.category, posts : filteredPost , categoryData : categoryData});
 }
 
