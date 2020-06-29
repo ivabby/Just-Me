@@ -7,8 +7,24 @@ const categoryData = data.categoryData;
 
 const recentPostAmount = 6;
 
+const defaultData = {
+    categoryData : categoryData
+}
+const rightSidebar = {
+    uniqueTags: uniqueTags,
+    recentPosts: postData.slice(0,recentPostAmount)
+}
+
 const getHomePage = function(req,res){
-    res.render('index' , {title : "Just Me" , posts : postData , active : "index" , categoryData : categoryData});
+
+    let data = {
+        ...defaultData,
+        title: "Just Me",
+        posts: postData,
+        active: "index"
+    }
+
+    res.render('index' , data);
 }
 
 const getBlogPost = function(req,res) {
@@ -19,11 +35,23 @@ const getBlogPost = function(req,res) {
         res.redirect('/404');
     }
 
-    res.render("post" , {title : post.title , post : post , uniqueTags : uniqueTags , recentPosts : postData.slice(0 , recentPostAmount) , categoryData : categoryData});
+    let data = {
+        ...defaultData,
+        ...recentPosts,
+        title: post.title,
+        post: post,
+    }
+
+    res.render("post" , data);
 }
 
 const get404 = function(req,res) {
-    res.render('404' , {title : '404 - I couldnot find that page....' , uniqueTags : uniqueTags , recentPosts : postData.slice(0 , recentPostAmount) , categoryData : categoryData});
+    let data = {
+        ...defaultData,
+        ...rightSidebar,
+        title: "404 - I couldnot find that page....",
+    }
+    res.render('404' , data);
 }
 
 const redirect404 = function(req , res) {
@@ -31,11 +59,22 @@ const redirect404 = function(req , res) {
 }
 
 const getAbout = function(req,res) {
-    res.render("about" , {title : "About Me" , active : "about" , categoryData : categoryData});
+    let data = {
+        ...defaultData,
+        title: "About Me",
+        active: "about"
+    }
+    res.render("about" , data);
 }
 
 const getContact = function(req,res) {
-    res.render("contact" , {title : "Contact" , active : "contact" , categoryData : categoryData});
+
+        let data = {
+            ...defaultData,
+            title: "Contact",
+            active: "contact"
+        }
+    res.render("contact" , data);
 }
 
 const getFilteredList = function(req,res) {
@@ -43,6 +82,14 @@ const getFilteredList = function(req,res) {
     let filteredPost = postData.filter((val) => {
         return val.category == query.category || val.tags.includes(query.tag);
     });
+
+    let data = {
+        ...defaultData,
+        title: "Just Me - Filtered",
+        active: query.category,
+        posts: filteredPost
+    }
+
     res.render('filter' , {title : "Just Me - Filtered" , active : query.category, posts : filteredPost , categoryData : categoryData});
 }
 
